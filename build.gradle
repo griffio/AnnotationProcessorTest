@@ -1,29 +1,44 @@
-plugins {
-	id "com.ewerk.gradle.plugins.annotation-processor" version "1.0.2"
-}
 apply plugin: 'java'
-apply plugin: 'idea'
 apply plugin: 'application'
+
+repositories {
+  maven {
+    url "http://dl.bintray.com/cbeust/maven"
+  }
+}
+
+project.ext.sourceCompatibility = JavaVersion.VERSION_1_8
+project.ext.targetCompatibility = JavaVersion.VERSION_1_8
+version = '0.1'
 
 defaultTasks 'run'
 
-version = '0.1'
+mainClassName = 'net.thauvin.erik.annotproctest.Example'
 
-mainClassName = 'net.thauvin.erik.annotpoctest.Example'
-[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-
-repositories {
-    maven {
-        url  "http://dl.bintray.com/cbeust/maven" 
+sourceSets {
+  generated {
+    java {
+      srcDirs = ['src/generated/java']
     }
+  }
+}
+
+compileJava {
+  description = "Configure the processor manually. The annotation processor is already on the compile classpath."
+  sourceSets.generated.java.srcDirs*.mkdirs()
+  options.compilerArgs += [
+      '-processor', 'com.beust.version.VersionProcessor',
+      '-s', sourceSets.generated.java.srcDirs.iterator().next()
+  ]
 }
 
 dependencies {
-	//compile "com.beust:version-processor:0.2"
+  compile(
+      "com.beust:version-processor:0.2"
+  )
 }
 
-
-annotationProcessor {
-	library "com.beust:version-processor:0.2"
-	processor "com.beust.version.VersionProcessor"
+clean {
+  description = "delete files the generated source directory tree"
+  delete fileTree(dir: sourceSets.generated.java.srcDirs.iterator().next())
 }

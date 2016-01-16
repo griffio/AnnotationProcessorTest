@@ -1,4 +1,4 @@
-package net.thauvin.erik.annotpoctest;
+package net.thauvin.erik.annotproctest;
 
 import com.beust.version.Version;
 
