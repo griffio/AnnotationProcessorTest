@@ -1,0 +1,29 @@
+plugins {
+	id "com.ewerk.gradle.plugins.annotation-processor" version "1.0.2"
+}
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'application'
+
+defaultTasks 'run'
+
+version = '0.1'
+
+mainClassName = 'net.thauvin.erik.annotpoctest.Example'
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+repositories {
+    maven {
+        url  "http://dl.bintray.com/cbeust/maven" 
+    }
+}
+
+dependencies {
+	//compile "com.beust:version-processor:0.2"
+}
+
+
+annotationProcessor {
+	library "com.beust:version-processor:0.2"
+	processor "com.beust.version.VersionProcessor"
+}
