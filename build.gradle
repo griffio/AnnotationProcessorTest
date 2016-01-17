@@ -1,3 +1,7 @@
+plugins {
+  id "com.ewerk.gradle.plugins.annotation-processor" version "1.0.2"
+}
+
 apply plugin: 'java'
 apply plugin: 'application'
 
@@ -9,27 +13,15 @@ repositories {
 
 project.ext.sourceCompatibility = JavaVersion.VERSION_1_8
 project.ext.targetCompatibility = JavaVersion.VERSION_1_8
-version = '0.1'
-
-defaultTasks 'run'
-
-mainClassName = 'net.thauvin.erik.annotproctest.Example'
-
-sourceSets {
-  generated {
-    java {
-      srcDirs = ['src/generated/java']
-    }
-  }
-}
+project.mainClassName = 'net.thauvin.erik.annotproctest.Example'
+project.version = '0.1'
+project.defaultTasks 'run'
 
 compileJava {
-  description = "Configure the processor manually. The annotation processor is already on the compile classpath."
-  sourceSets.generated.java.srcDirs*.mkdirs()
-  options.compilerArgs += [
-      '-processor', 'com.beust.version.VersionProcessor',
-      '-s', sourceSets.generated.java.srcDirs.iterator().next()
-  ]
+  options.with {
+    encoding = 'utf-8'
+    compilerArgs << '-proc:none'
+  }
 }
 
 dependencies {
@@ -38,7 +30,7 @@ dependencies {
   )
 }
 
-clean {
-  description = "delete files the generated source directory tree"
-  delete fileTree(dir: sourceSets.generated.java.srcDirs.iterator().next())
+annotationProcessor {
+  library "com.beust:version-processor:0.2"
+  processor "com.beust.version.VersionProcessor"
 }
